@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitud de Vacaciones</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #1B1F23;
+    --muted: #6B7280;
+    --card: rgba(250, 250, 248, 0.97);
+    --border: #E2E5E1;
+    --border-focus: #0F6E5C;
+    --teal: #0F6E5C;
+    --teal-dark: #0B5245;
+    --amber: #E8A33D;
+    --danger: #C0432A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(160deg, rgba(8,14,16,0.78), rgba(8,14,16,0.55)),
+      url('https://images.unsplash.com/photo-1602086756456-804002ab43e3?fm=jpg&q=80&w=1920&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    padding: 24px;
+    color: var(--ink);
+  }
+
+  .card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--card);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 20px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.08);
+    padding: 40px 36px 32px;
+    opacity: 0;
+    transform: translateY(14px);
+    animation: rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation: none; opacity: 1; transform: none; }
+  }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--teal);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .eyebrow svg { flex-shrink: 0; }
+
+  h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 28px;
+  }
+
+  .section-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--teal-dark);
+    margin: 26px 0 12px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .field {
+    position: relative;
+    margin-bottom: 18px;
+  }
+
+  .field label {
+    position: absolute;
+    left: 14px;
+    top: 13px;
+    font-size: 0.94rem;
+    color: var(--muted);
+    pointer-events: none;
+    transition: 0.15s ease;
+    background: transparent;
+    padding: 0 4px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.94rem;
+    padding: 18px 14px 8px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: rgba(255,255,255,0.7);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .field textarea { padding-top: 20px; resize: vertical; min-height: 64px; }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--border-focus);
+    background: #fff;
+  }
+
+  .field input:focus + label,
+  .field input:not(:placeholder-shown) + label,
+  .field select:focus + label,
+  .field select.filled + label,
+  .field textarea:focus + label,
+  .field textarea:not(:placeholder-shown) + label {
+    top: 5px;
+    font-size: 0.7rem;
+    color: var(--teal-dark);
+    font-weight: 500;
+  }
+
+  .field select {
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 16px;
+    top: 22px;
+    width: 8px;
+    height: 8px;
+    border-right: 1.5px solid var(--muted);
+    border-bottom: 1.5px solid var(--muted);
+    transform: rotate(45deg);
+    pointer-events: none;
+  }
+
+  .hint-row {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: -12px;
+    margin-bottom: 18px;
+  }
+
+  button[type="submit"] {
+    position: relative;
+    width: 100%;
+    padding: 14px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.96rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    box-shadow: 0 8px 20px rgba(15, 110, 92, 0.28);
+  }
+
+  button[type="submit"]:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(15, 110, 92, 0.36); }
+  button[type="submit"]:active { transform: translateY(0); }
+
+  button[type="submit"].sent {
+    background: linear-gradient(135deg, #17875F, #0B5245);
+  }
+
+  .btn-icon { display: flex; align-items: center; }
+  .btn-icon svg { display: block; }
+
+  .success {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: var(--teal-dark);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: 0.25s ease;
+  }
+
+  .success.show { opacity: 1; transform: translateY(0); }
+
+  input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 480px) {
+    .card { padding: 30px 22px 26px; }
+    .row { grid-template-columns: 1fr; gap: 0; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="eyebrow">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Recursos Humanos · Wiwynn
+  </div>
+  <h1>Solicitud de vacaciones</h1>
+  <p class="subtitle">Completa el formulario y se generará un correo listo para enviar a Recursos Humanos.</p>
+
+  <form id="vacationForm">
+
+    <p class="section-label">Datos del empleado</p>
+
+    <div class="field">
+      <input type="text" id="name" placeholder=" " required>
+      <label for="name">Nombre completo</label>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <input type="text" id="empid" placeholder=" " required>
+        <label for="empid">Número de empleado</label>
+      </div>
+      <div class="field select-wrap">
+        <select id="shift" required>
+          <option value="" disabled selected></option>
+          <option>A</option>
+          <option>B</option>
+          <option>C</option>
+          <option>D</option>
+        </select>
+        <label for="shift">Turno</label>
+      </div>
+    </div>
+
+    <p class="section-label">Periodo solicitado</p>
+
+    <div class="row">
+      <div class="field">
+        <input type="date" id="start" placeholder=" " required>
+        <label for="start">Fecha de inicio</label>
+      </div>
+      <div class="field">
+        <input type="date" id="end" placeholder=" " required>
+        <label for="end">Fecha de fin</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <textarea id="reason" rows="3" placeholder=" " maxlength="240"></textarea>
+      <label for="reason">Motivo (opcional)</label>
+    </div>
+    <div class="hint-row"><span id="charCount">0/240</span></div>
+
+    <button type="submit" id="submitBtn">
+      <span class="btn-icon" id="btnIcon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+      </span>
+      <span id="btnText">Enviar solicitud</span>
+    </button>
+
+    <div class="success" id="successMsg">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+      Solicitud generada — revisa la ventana de Outlook
+    </div>
+
+  </form>
+</div>
+
+<script>
+  const shiftSelect = document.getElementById('shift');
+  shiftSelect.addEventListener('change', function() {
+    this.classList.toggle('filled', this.value !== '');
+  });
+
+  const reasonField = document.getElementById('reason');
+  const charCount = document.getElementById('charCount');
+  reasonField.addEventListener('input', function() {
+    charCount.textContent = `${this.value.length}/240`;
+  });
+
+  document.getElementById('vacationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const empId = document.getElementById('empid').value;
+    const shift = document.getElementById('shift').value;
+    const start = document.getElementById('start').value;
+    const end = document.getElementById('end').value;
+    const reason = document.getElementById('reason').value;
+
+    if (new Date(end) < new Date(start)) {
+      alert('La fecha de fin no puede ser anterior.');
+      return;
+    }
+
+    const to = 'Valeria_Fernandez@wiwynn.com';
+
+    const cc = [
+      'Edgar_Rodriguez@wiwynn.com',
+      'Aide_Velazquez@wiwynn.com',
+      'Daniel_Mijares@wiwynn.com',
+      'Alexis_Reyes@wiwynn.com',
+      'Reynaldo_Martinez@wiwynn.com',
+      'Gustavo_Davila@wiwynn.com'
+    ].join(';');
+
+    const subject = encodeURIComponent('Solicitud de Autorización de Vacaciones – ' + name);
+
+    const bodyText =
+`Buen día, Valeria,
+
+Por medio de la presente, se solicita su apoyo para la autorización y registro de la siguiente solicitud de vacaciones del asociado.
+
+• Nombre del empleado: ${name}
+• Número de empleado: ${empId}
+• Turno: ${shift}
+• Fecha de inicio: ${start}
+• Fecha de fin: ${end}
+• Motivo: ${reason || 'N/A'}
+
+Quedo atento(a) a sus comentarios.
+
+Saludos cordiales.`;
+
+    const body = encodeURIComponent(bodyText);
+    const url = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(to)}&cc=${encodeURIComponent(cc)}&subject=${subject}&body=${body}`;
+
+    window.open(url, '_blank');
+
+    const btn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const btnIcon = document.getElementById('btnIcon');
+    btn.classList.add('sent');
+    btnText.textContent = 'Enviado';
+    btnIcon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>';
+    document.getElementById('successMsg').classList.add('show');
+
+    this.reset();
+    shiftSelect.classList.remove('filled');
+    charCount.textContent = '0/240';
+
+    setTimeout(() => {
+      btn.classList.remove('sent');
+      btnText.textContent = 'Enviar solicitud';
+      btnIcon.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>';
+    }, 3000);
+  });
+</script>
+
+</body>
+</html>
